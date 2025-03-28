@@ -36,10 +36,10 @@ include '../config/db_connect.php';
                                 <p class="text-center">Start typing a location to search for parking spots.</p>
                             </div>
 
-                            <h6 class="mt-4">Price Comparison (Low to High)</h6>
+                            <!-- <h6 class="mt-4">Price Comparison (Low to High)</h6>
                             <div id="price-comparison">
                                 <p class="text-center">Enter a location to compare parking prices.</p>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>

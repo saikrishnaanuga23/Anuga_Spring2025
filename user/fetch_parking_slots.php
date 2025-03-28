@@ -17,7 +17,6 @@ if (isset($_GET['location'])) {
                         <th>Location</th>
                         <th>Capacity</th>
                         <th>Available Slots</th>
-                        <th>Price</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -29,7 +28,7 @@ if (isset($_GET['location'])) {
                     <td>' . htmlspecialchars($row['location']) . '</td>
                     <td>' . htmlspecialchars($row['capacity']) . '</td>
                     <td>' . ($available_slots > 0 ? $available_slots . " available" : "Fully booked") . '</td>
-                    <td>$' . htmlspecialchars($row['price']) . '</td>
+                    
                     <td>
                         <a href="book_parking.php?id=' . $row['id'] . '" class="btn btn-primary btn-sm">Book Now</a>
                     </td>
