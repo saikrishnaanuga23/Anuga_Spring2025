@@ -108,7 +108,7 @@ $stmt_slots->close();
     <script>
         function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
-                center: { lat: 37.7749, lng: -122.4194 },
+                center: { lat: 35.50008, lng: -97.55392 },
                 zoom: 12
             });
 

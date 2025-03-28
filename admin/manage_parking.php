@@ -88,9 +88,9 @@ $result = $conn->query($query);
                                     <div class="col-md-2">
                                         <input type="number" name="capacity" class="form-control" placeholder="Capacity" required>
                                     </div>
-                                    <div class="col-md-2">
+                                    <!-- <div class="col-md-2">
                                         <input type="number" name="price" class="form-control" placeholder="Price" required>
-                                    </div>
+                                    </div> -->
                                     <div class="col-md-2">
                                         <button type="submit" name="add_parking" class="btn btn-primary">Add Parking</button>
                                     </div>
@@ -107,7 +107,7 @@ $result = $conn->query($query);
                                         <th>Longitude</th>
                                         <th>Capacity</th>
                                         <th>Available Slots</th>
-                                        <th>Price</th>
+                                        <!-- <th>Price</th> -->
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -139,7 +139,7 @@ $result = $conn->query($query);
     <script>
         function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
-                center: {lat: -34.397, lng: 150.644},
+                center: {lat: 35.50008, lng: -97.55392},
                 zoom: 13
             });
             var input = document.getElementById('location');

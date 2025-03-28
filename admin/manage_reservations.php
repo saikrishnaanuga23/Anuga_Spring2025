@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 
 include '../config/db_connect.php';
 
-// Fetch bookings for reservations management
+// Fetch bookings
 $result = $conn->query("SELECT b.id, u.name AS user_name, p.name AS parking_name, b.created_at AS booking_date, b.status 
                         FROM bookings b 
                         LEFT JOIN users u ON b.user_id = u.id 
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_status'])) {
     <div class="pc-container">
         <div class="pc-content">
             <div class="page-header">
-                <h5 class="mb-0">Manage Reservations</h5>
+                <h5 class="mb-0">Manage Bookings</h5>
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_status'])) {
                                             <td>
                                                 <span class="badge 
                                                     <?php echo ($row['status'] == 'Confirmed') ? 'bg-success' : 
-                                                               (($row['status'] == 'Pending') ? 'bg-warning' : 'bg-danger'); ?>">
+                                                               (($row['status'] == 'Reserved') ? 'bg-warning' : 'bg-danger'); ?>">
                                                     <?php echo htmlspecialchars($row['status']); ?>
                                                 </span>
                                             </td>
@@ -113,7 +113,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_status'])) {
                                                     <select name="status" class="form-select">
                                                         <option value="Confirmed" <?php if ($row['status'] == 'Confirmed') echo 'selected'; ?>>Confirmed</option>
                                                         <option value="Cancelled" <?php if ($row['status'] == 'Cancelled') echo 'selected'; ?>>Cancelled</option>
-                                                        <option value="Pending" <?php if ($row['status'] == 'Pending') echo 'selected'; ?>>Pending</option>
                                                     </select>
                                                     <button type="submit" name="update_status" class="btn btn-primary">Update</button>
                                                 </form>

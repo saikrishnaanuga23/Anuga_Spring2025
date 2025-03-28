@@ -54,7 +54,7 @@ include '../config/db_connect.php';
 
         function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
-                center: { lat: 12.2958, lng: 76.6394 }, // Default Mysore
+                center: { lat: 35.50008, lng: -97.55392 }, 
                 zoom: 13
             });
 
@@ -116,3 +116,4 @@ include '../config/db_connect.php';
     </script>
 </body>
 </html>
+

@@ -127,10 +127,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['csrf_token'])) {
                     <input type="number" name="capacity" class="form-control" value="<?php echo htmlspecialchars($parking['capacity']); ?>" required>
                 </div>
 
-                <div class="form-group mb-3">
+                <!-- <div class="form-group mb-3">
                     <label>Price</label>
                     <input type="number" name="price" class="form-control" value="<?php echo htmlspecialchars($parking['price']); ?>" step="0.01" required>
-                </div>
+                </div> -->
 
                 <button type="submit" class="btn btn-success">Update Parking</button>
                 <a href="manage_parking.php" class="btn btn-secondary">Cancel</a>

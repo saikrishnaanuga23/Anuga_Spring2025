@@ -40,9 +40,43 @@ $stmt->close();
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-body">
-                            
+                            <h6>Recent Bookings</h6>
+                            <?php if (!empty($bookings)) { ?>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Parking Name</th>
+                                            <th>Booking Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($bookings as $booking) { ?>
+                                            <tr>
+                                                <td><?php echo htmlspecialchars($booking['parking_name']); ?></td>
+                                                <td><?php echo htmlspecialchars($booking['booking_date']); ?></td>
+                                                <td>
+    <span class="badge 
+        <?php 
+            if ($booking['status'] === 'confirmed') {
+                echo 'bg-success'; // Green for confirmed
+            } elseif ($booking['status'] === 'cancelled') {
+                echo 'bg-danger'; // Red for cancelled
+            } else {
+                echo 'bg-warning'; // Yellow for reserved
+            }
+        ?>">
+        <?php echo ucfirst(htmlspecialchars($booking['status'])); ?>
+    </span>
+</td>
 
-
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            <?php } else { ?>
+                                <p class="text-center text-danger">No recent bookings found.</p>
+                            <?php } ?>
                             <a href="search_parking.php" class="btn btn-primary mt-3">Find Parking</a>
                         </div>
                     </div>
