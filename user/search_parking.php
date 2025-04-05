@@ -20,7 +20,7 @@ include '../config/db_connect.php';
     <div class="pc-container">
         <div class="pc-content">
             <div class="page-header">
-                <h5 class="mb-0">Search & Compare Parking</h5>
+                <h5 class="mb-0">Search Parking</h5>
             </div>
 
             <div class="row">
@@ -35,11 +35,6 @@ include '../config/db_connect.php';
                             <div id="parking-results">
                                 <p class="text-center">Start typing a location to search for parking spots.</p>
                             </div>
-
-                            <!-- <h6 class="mt-4">Price Comparison (Low to High)</h6>
-                            <div id="price-comparison">
-                                <p class="text-center">Enter a location to compare parking prices.</p>
-                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -78,14 +73,12 @@ include '../config/db_connect.php';
 
                 let locationName = place.name || place.formatted_address;
                 fetchParkingSlots(locationName);
-                fetchPriceComparison(locationName);
             });
 
             document.getElementById('search-location').addEventListener('keyup', function () {
                 let location = this.value.trim();
                 if (location.length > 2) {
                     fetchParkingSlots(location);
-                    fetchPriceComparison(location);
                 }
             });
         }
@@ -96,17 +89,6 @@ include '../config/db_connect.php';
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     document.getElementById("parking-results").innerHTML = xhr.responseText;
-                }
-            };
-            xhr.send();
-        }
-
-        function fetchPriceComparison(location) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "fetch_price_comparison.php?location=" + encodeURIComponent(location), true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    document.getElementById("price-comparison").innerHTML = xhr.responseText;
                 }
             };
             xhr.send();

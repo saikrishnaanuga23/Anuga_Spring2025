@@ -70,12 +70,12 @@ if (!isset($_SESSION['role'])) {
                             <span class="pc-mtext">Search Parking</span>
                         </a>
                     </li>
-                    <!-- <li class="pc-item">
+                    <li class="pc-item">
                         <a href="../user/booking_history.php" class="pc-link">
                             <span class="pc-micon"><i data-feather="clock"></i></span>
                             <span class="pc-mtext">Booking History</span>
                         </a>
-                    </li> -->
+                    </li>
                 <?php } ?>
                 
                 <li class="pc-item">
