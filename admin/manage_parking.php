@@ -4,7 +4,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../auth/login.php");
     exit();
 }
-include '../config/db_connect.php'; // Database connection
+include '../config/db_connect.php'; // Database 
 
 // Handle add parking slot
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_parking'])) {
