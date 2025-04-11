@@ -3,8 +3,16 @@ session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
     header("Location: ../auth/login.php");
     exit();
+
+$query = "SELECT p.id, p.name, p.location, p.latitude, p.longitude, p.capacity, p.price, 
+                 (p.capacity - COALESCE((SELECT COUNT(*) FROM bookings b WHERE b.parking_id = p.id AND b.status IN ('confirmed')), 0)) AS available_slots 
+          FROM parking_slots p 
+          ORDER BY p.id DESC";
+$result = $conn->query($query);
 }
-include '../config/db_connect.php';
+
+include '../config/db_connect.php'; // Database connection
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -90,17 +98,6 @@ include '../config/db_connect.php';
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     document.getElementById("parking-results").innerHTML = xhr.responseText;
-                }
-            };
-            xhr.send();
-        }
-
-        function fetchPriceComparison(location) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "fetch_price_comparison.php?location=" + encodeURIComponent(location), true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    document.getElementById("price-comparison").innerHTML = xhr.responseText;
                 }
             };
             xhr.send();
