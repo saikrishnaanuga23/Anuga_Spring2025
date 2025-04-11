@@ -28,7 +28,6 @@ if (isset($_GET['location'])) {
                     <td>' . htmlspecialchars($row['location']) . '</td>
                     <td>' . htmlspecialchars($row['capacity']) . '</td>
                     <td>' . ($available_slots > 0 ? $available_slots . " available" : "Fully booked") . '</td>
-                    
                     <td>
                         <a href="book_parking.php?id=' . $row['id'] . '" class="btn btn-primary btn-sm">Book Now</a>
                         <a href="https://www.google.com/maps/dir/?api=1&destination=' . $row['latitude'] . ',' . $row['longitude'] . '" target="_blank" class="btn btn-info btn-sm">Get Directions</a>

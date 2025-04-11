@@ -47,7 +47,6 @@ if (!$parking) {
                             <h6>Parking Slot Details</h6>
                             <p><strong>Parking Name:</strong> <?php echo htmlspecialchars($parking['name']); ?></p>
                             <p><strong>Location:</strong> <?php echo htmlspecialchars($parking['location']); ?></p>
-                           
                             
                             <form action="confirm_booking.php" method="POST">
                                 <input type="hidden" name="parking_id" value="<?php echo $parking_id; ?>">

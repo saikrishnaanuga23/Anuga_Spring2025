@@ -29,12 +29,10 @@ $stmt->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <title>Booking History | Advance Parking Finder</title>
     <?php include '../includes/head.php'; ?>
 </head>
-
 <body>
     <?php include '../includes/sidebar.php'; ?>
     <?php include '../includes/topbar.php'; ?>
@@ -63,22 +61,22 @@ $stmt->close();
                                                 <td><?php echo htmlspecialchars($booking['parking_name']); ?></td>
                                                 <td><?php echo date("d M Y, H:i A", strtotime($booking['booking_date'])); ?></td>
                                                 <td>
-                                                    <span class="badge 
-        <?php
-                                            $status = strtolower($booking['status']); // Convert status to lowercase for consistency
-                                            if ($status === 'confirmed') {
-                                                echo 'bg-success'; // Green for confirmed
-                                            } elseif ($status === 'reserved') {
-                                                echo 'bg-warning'; // Yellow for reserved
-                                            } elseif ($status === 'cancelled') {
-                                                echo 'bg-danger'; // Red for cancelled
-                                            } else {
-                                                echo 'bg-secondary'; // Grey for unknown status
-                                            }
+    <span class="badge 
+        <?php 
+            $status = strtolower($booking['status']); // Convert status to lowercase for consistency
+            if ($status === 'confirmed') {
+                echo 'bg-success'; // Green for confirmed
+            } elseif ($status === 'reserved') {
+                echo 'bg-warning'; // Yellow for reserved
+            } elseif ($status === 'cancelled') {
+                echo 'bg-danger'; // Red for cancelled
+            } else {
+                echo 'bg-secondary'; // Grey for unknown status
+            }
         ?>">
-                                                        <?php echo ucfirst(htmlspecialchars($booking['status'])); ?>
-                                                    </span>
-                                                </td>
+        <?php echo ucfirst(htmlspecialchars($booking['status'])); ?>
+    </span>
+</td>
 
                                             </tr>
                                         <?php } ?>
@@ -97,5 +95,4 @@ $stmt->close();
     </div>
     <?php include '../includes/footer.php'; ?>
 </body>
-
 </html>
