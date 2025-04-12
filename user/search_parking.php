@@ -3,8 +3,16 @@ session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
     header("Location: ../auth/login.php");
     exit();
+
+$query = "SELECT p.id, p.name, p.location, p.latitude, p.longitude, p.capacity, p.price, 
+                 (p.capacity - COALESCE((SELECT COUNT(*) FROM bookings b WHERE b.parking_id = p.id AND b.status IN ('confirmed')), 0)) AS available_slots 
+          FROM parking_slots p 
+          ORDER BY p.id DESC";
+$result = $conn->query($query);
 }
-include '../config/db_connect.php';
+
+include '../config/db_connect.php'; // Database connection
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,7 +28,7 @@ include '../config/db_connect.php';
     <div class="pc-container">
         <div class="pc-content">
             <div class="page-header">
-                <h5 class="mb-0">Search Parking</h5>
+                <h5 class="mb-0">Search & Compare Parking</h5>
             </div>
 
             <div class="row">
@@ -34,7 +42,6 @@ include '../config/db_connect.php';
                             <h6 class="mt-4">Available Parking Spots</h6>
                             <div id="parking-results">
                                 <p class="text-center">Start typing a location to search for parking spots.</p>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -73,12 +80,14 @@ include '../config/db_connect.php';
 
                 let locationName = place.name || place.formatted_address;
                 fetchParkingSlots(locationName);
+                fetchPriceComparison(locationName);
             });
 
             document.getElementById('search-location').addEventListener('keyup', function () {
                 let location = this.value.trim();
                 if (location.length > 2) {
                     fetchParkingSlots(location);
+                    fetchPriceComparison(location);
                 }
             });
         }

@@ -1,14 +1,16 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
     header("Location: ../auth/login.php");
     exit();
 }
 include '../config/db_connect.php'; // Database connection
 
-$admin_id = $_SESSION['user_id'];
+$user_id = $_SESSION['user_id'];
+
+// Fetch user data
 $stmt = $conn->prepare("SELECT name, email FROM users WHERE id = ?");
-$stmt->bind_param("i", $admin_id);
+$stmt->bind_param("i", $user_id);
 $stmt->execute();
 $stmt->bind_result($name, $email);
 $stmt->fetch();
@@ -16,27 +18,25 @@ $stmt->close();
 
 // Handle profile update
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
-    $new_name = trim($_POST['name']);
-    $new_email = trim($_POST['email']);
-    
+    $new_name = htmlspecialchars(trim($_POST['name']));
+    $new_email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+
     if (!empty($new_name) && !empty($new_email)) {
         $update_stmt = $conn->prepare("UPDATE users SET name = ?, email = ? WHERE id = ?");
-        $update_stmt->bind_param("ssi", $new_name, $new_email, $admin_id);
-        if ($update_stmt->execute()) {
-            $_SESSION['success_msg'] = "Profile updated successfully!";
-        } else {
-            $_SESSION['error_msg'] = "Profile update failed!";
-        }
+        $update_stmt->bind_param("ssi", $new_name, $new_email, $user_id);
+        $update_stmt->execute();
         $update_stmt->close();
-        header("Location: admin_profile.php");
+        header("Location: user_profile.php?success");
         exit();
+    } else {
+        $error = "All fields are required!";
     }
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Admin Profile | Advance Parking Finder</title>
+    <title>User Profile | Advance Parking Finder</title>
     <?php include '../includes/head.php'; ?>
 </head>
 <body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" data-pc-theme="light">
@@ -45,23 +45,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
     <div class="pc-container">
         <div class="pc-content">
             <div class="page-header">
-                <h5 class="mb-0">Admin Profile</h5>
+                <h5 class="mb-0">User Profile</h5>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-body">
                             <h6>Update Profile</h6>
-                            <?php 
-                                if (isset($_SESSION['success_msg'])) {
-                                    echo "<p class='text-success'>{$_SESSION['success_msg']}</p>";
-                                    unset($_SESSION['success_msg']);
-                                }
-                                if (isset($_SESSION['error_msg'])) {
-                                    echo "<p class='text-danger'>{$_SESSION['error_msg']}</p>";
-                                    unset($_SESSION['error_msg']);
-                                }
-                            ?>
+                            <?php if (isset($_GET['success'])) echo "<p class='text-success'>Profile updated successfully!</p>"; ?>
+                            <?php if (isset($error)) echo "<p class='text-danger'>$error</p>"; ?>
                             <form method="POST">
                                 <div class="form-group mb-3">
                                     <label>Name</label>

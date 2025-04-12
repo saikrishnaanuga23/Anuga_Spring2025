@@ -4,7 +4,12 @@ include '../config/db_connect.php';
 if (isset($_GET['location'])) {
     $location = "%" . trim($_GET['location']) . "%";
 
-    $stmt = $conn->prepare("SELECT * FROM parking_slots WHERE location LIKE ?");
+
+    $stmt = $conn->prepare("SELECT p.*, 
+        (p.capacity - COALESCE((SELECT COUNT(*) FROM bookings b WHERE b.parking_id = p.id AND b.status IN ('confirmed')), 0)) AS available_slots 
+        FROM parking_slots p WHERE p.location LIKE ?"); 
+
+
     $stmt->bind_param("s", $location);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -22,12 +27,12 @@ if (isset($_GET['location'])) {
                 </thead>
                 <tbody>';
         while ($row = $result->fetch_assoc()) {
-            $available_slots = $row['capacity'] - $row['booked_slots'];
+            
             echo '<tr>
                     <td>' . htmlspecialchars($row['name']) . '</td>
                     <td>' . htmlspecialchars($row['location']) . '</td>
                     <td>' . htmlspecialchars($row['capacity']) . '</td>
-                    <td>' . ($available_slots > 0 ? $available_slots . " available" : "Fully booked") . '</td>
+                   <td>' . ($row['available_slots'] > 0 ? $row['available_slots'] . " available" : "Fully booked") . '</td>
                     
                     <td>
                         <a href="book_parking.php?id=' . $row['id'] . '" class="btn btn-primary btn-sm">Book Now</a>

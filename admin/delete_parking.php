@@ -54,3 +54,4 @@ $stmt->close();
 header("Location: manage_parking.php");
 exit();
 ?>
+

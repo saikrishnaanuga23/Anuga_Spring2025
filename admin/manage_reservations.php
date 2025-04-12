@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_status'])) {
                                         <th>Parking Spot</th>
                                         <th>Booking Date</th>
                                         <th>Status</th>
-                                        <th>Action</th>
+                                        <!-- <th>Action</th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_status'])) {
                                                     <?php echo htmlspecialchars($row['status']); ?>
                                                 </span>
                                             </td>
-                                            <td>
+                                            <!-- <td>
                                                 <form method="POST">
                                                     <input type="hidden" name="booking_id" value="<?php echo $row['id']; ?>">
                                                     <select name="status" class="form-select">
@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_status'])) {
                                                     </select>
                                                     <button type="submit" name="update_status" class="btn btn-primary">Update</button>
                                                 </form>
-                                            </td>
+                                            </td> -->
                                         </tr>
                                     <?php } ?>
 

@@ -4,7 +4,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../auth/login.php");
     exit();
 }
-include '../config/db_connect.php'; // Database connection
+include '../config/db_connect.php'; // Database 
+
 // Handle add parking slot
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_parking'])) {
     $name = trim($_POST['name']);
@@ -13,8 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_parking'])) {
     $longitude = trim($_POST['longitude']);
     $capacity = (int) $_POST['capacity'];
     $price = (int) $_POST['price'];
+
     if (!empty($name) && !empty($location) && !empty($latitude) && !empty($longitude) && $capacity > 0) {
-        $stmt = $conn->prepare("INSERT INTO parking_slots (name, location, latitude, longitude, capacity, price, booked_slots) VALUES (?, ?, ?, ?, ?, ?, 0)");
+        $stmt = $conn->prepare("INSERT INTO parking_slots (name, location, latitude, longitude, capacity, price) VALUES (?, ?, ?, ?, ?, ?)");
         
         if ($stmt) {
             $stmt->bind_param("ssddii", $name, $location, $latitude, $longitude, $capacity, $price);
@@ -28,16 +30,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_parking'])) {
         } else {
             $_SESSION['error_msg'] = "SQL Error: " . $conn->error;
         }
+
         header("Location: manage_parking.php");
         exit();
     } else {
         $_SESSION['error_msg'] = "Please fill in all fields!";
     }
 }
-// Fetch parking slots with available slots calculation
-// This query now uses the booked_slots field which is updated when users make bookings
+
+// Fetch parking slots along with available slots calculation
+// $query = "SELECT p.id, p.name, p.location, p.latitude, p.longitude, p.capacity, p.price, 
+//                  (p.capacity - COALESCE((SELECT COUNT(*) FROM reservations r WHERE r.parking_id = p.id AND r.status = 'Confirmed'), 0)) AS available_slots 
+//           FROM parking_slots p 
+//           ORDER BY p.id DESC";
+// $result = $conn->query($query);
+
 $query = "SELECT p.id, p.name, p.location, p.latitude, p.longitude, p.capacity, p.price, 
-                 (p.capacity - p.booked_slots) AS available_slots 
+                 (p.capacity - COALESCE((SELECT COUNT(*) FROM bookings b WHERE b.parking_id = p.id AND b.status IN ('confirmed')), 0)) AS available_slots 
           FROM parking_slots p 
           ORDER BY p.id DESC";
 $result = $conn->query($query);
@@ -86,58 +95,41 @@ $result = $conn->query($query);
                                         <input type="number" name="capacity" class="form-control" placeholder="Capacity" required>
                                     </div>
                                     <div class="col-md-2">
-                                        <input type="number" name="price" class="form-control" placeholder="Price" required>
-                                    </div>
-                                    <div class="col-md-2">
                                         <button type="submit" name="add_parking" class="btn btn-primary">Add Parking</button>
                                     </div>
                                 </div>
                             </form>
                             <div id="map" style="height: 400px; margin-top: 20px;"></div>
                             <h6 class="mt-4">Parking Slots</h6>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover">
-                                    <thead class="thead-dark">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Location</th>
+                                        <th>Latitude</th>
+                                        <th>Longitude</th>
+                                        <th>Capacity</th>
+                                        <th>Available Slots</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php while ($row = $result->fetch_assoc()) { ?>
                                         <tr>
-                                            <th>Name</th>
-                                            <th>Location</th>
-                                            <th>Latitude</th>
-                                            <th>Longitude</th>
-                                            <th>Capacity</th>
-                                            <th>Available Slots</th>
-                                            <th>Actions</th>
+                                            <td><?php echo htmlspecialchars($row['name']); ?></td>
+                                            <td><?php echo htmlspecialchars($row['location']); ?></td>
+                                            <td><?php echo htmlspecialchars($row['latitude']); ?></td>
+                                            <td><?php echo htmlspecialchars($row['longitude']); ?></td>
+                                            <td><?php echo htmlspecialchars($row['capacity']); ?></td>
+                                            <td><?php echo max(0, $row['available_slots']); ?></td> <!-- Prevent negative values -->
+                                            <td>
+                                                <a href="edit_parking.php?id=<?php echo $row['id']; ?>" class="btn btn-warning btn-sm">Edit</a>
+                                                <a href="delete_parking.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</a>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php while ($row = $result->fetch_assoc()) { ?>
-                                            <tr>
-                                                <td><?php echo htmlspecialchars($row['name']); ?></td>
-                                                <td><?php echo htmlspecialchars($row['location']); ?></td>
-                                                <td><?php echo htmlspecialchars($row['latitude']); ?></td>
-                                                <td><?php echo htmlspecialchars($row['longitude']); ?></td>
-                                                <td><?php echo htmlspecialchars($row['capacity']); ?></td>
-                                                <td>
-                                                    <?php
-                                                    $available = max(0, $row['available_slots']);
-                                                    $percent = ($available / $row['capacity']) * 100;
-                                                    $statusClass = $percent > 50 ? 'success' : ($percent > 20 ? 'warning' : 'danger');
-                                                    ?>
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="me-2"><?php echo $available; ?> slots</span>
-                                                        <div class="progress flex-grow-1" style="height: 6px;">
-                                                            <div class="progress-bar bg-<?php echo $statusClass; ?>" style="width: <?php echo $percent; ?>%"></div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <a href="edit_parking.php?id=<?php echo $row['id']; ?>" class="btn btn-warning btn-sm">Edit</a>
-                                                    <a href="delete_parking.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</a>
-                                                </td>
-                                            </tr>
-                                        <?php } ?>
-                                    </tbody>
-                                </table>
-                            </div>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
