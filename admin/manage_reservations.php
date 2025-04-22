@@ -7,6 +7,29 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 
 include '../config/db_connect.php';
 
+// Handle booking deletion
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_booking'])) {
+    $booking_id = isset($_POST['booking_id']) ? intval($_POST['booking_id']) : 0;
+
+    if ($booking_id > 0) {
+        $stmt = $conn->prepare("DELETE FROM bookings WHERE id = ?");
+        $stmt->bind_param("i", $booking_id);
+
+        if ($stmt->execute()) {
+            $_SESSION['success_msg'] = "Booking deleted successfully!";
+        } else {
+            $_SESSION['error_msg'] = "Failed to delete booking: " . $stmt->error;
+        }
+        $stmt->close();
+    } else {
+        $_SESSION['error_msg'] = "Invalid booking ID!";
+    }
+
+    header("Location: manage_reservations.php");
+    exit();
+}
+
+
 // Fetch bookings
 $result = $conn->query("SELECT b.id, u.name AS user_name, p.name AS parking_name, b.created_at AS booking_date, b.status 
                         FROM bookings b 
@@ -14,28 +37,6 @@ $result = $conn->query("SELECT b.id, u.name AS user_name, p.name AS parking_name
                         LEFT JOIN parking_slots p ON b.parking_id = p.id 
                         ORDER BY b.created_at DESC");
 
-// Handle status update
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_status'])) {
-    $booking_id = isset($_POST['booking_id']) ? intval($_POST['booking_id']) : 0;
-    $new_status = isset($_POST['status']) ? trim($_POST['status']) : '';
-
-    if ($booking_id > 0 && in_array($new_status, ['Pending', 'Confirmed', 'Cancelled'])) {
-        $stmt = $conn->prepare("UPDATE bookings SET status = ? WHERE id = ?");
-        $stmt->bind_param("si", $new_status, $booking_id);
-
-        if ($stmt->execute()) {
-            $_SESSION['success_msg'] = "Booking status updated successfully!";
-        } else {
-            $_SESSION['error_msg'] = "Failed to update status: " . $stmt->error;
-        }
-        $stmt->close();
-    } else {
-        $_SESSION['error_msg'] = "Invalid input!";
-    }
-
-    header("Location: manage_reservations.php");
-    exit();
-}
 ?>
 
 <!DOCTYPE html>
@@ -91,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_status'])) {
                                         <th>Parking Spot</th>
                                         <th>Booking Date</th>
                                         <th>Status</th>
-                                        <!-- <th>Action</th> -->
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -107,22 +108,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_status'])) {
                                                     <?php echo htmlspecialchars($row['status']); ?>
                                                 </span>
                                             </td>
-                                            <!-- <td>
-                                                <form method="POST">
+                                            <td>
+                                                <form method="POST" style="display: inline;" onsubmit="return confirmDelete()">
                                                     <input type="hidden" name="booking_id" value="<?php echo $row['id']; ?>">
-                                                    <select name="status" class="form-select">
-                                                        <option value="Confirmed" <?php if ($row['status'] == 'Confirmed') echo 'selected'; ?>>Confirmed</option>
-                                                        <option value="Cancelled" <?php if ($row['status'] == 'Cancelled') echo 'selected'; ?>>Cancelled</option>
-                                                    </select>
-                                                    <button type="submit" name="update_status" class="btn btn-primary">Update</button>
+                                                    <button type="submit" name="delete_booking" class="btn btn-sm btn-danger">
+                                                        Delete
+                                                    </button>
                                                 </form>
-                                            </td> -->
+                                            </td>
                                         </tr>
                                     <?php } ?>
 
                                     <?php if ($result->num_rows == 0): ?>
                                         <tr>
-                                            <td colspan="5" class="text-center text-muted">No bookings available.</td>
+                                            <td colspan="6" class="text-center text-muted">No bookings available.</td>
                                         </tr>
                                     <?php endif; ?>
 
@@ -135,5 +134,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_status'])) {
         </div>
     </div>
     <?php include '../includes/footer.php'; ?>
+    <script>
+    function confirmDelete() {
+        return confirm("Are you sure you want to delete this booking? This action cannot be undone.");
+    }
+    </script>
 </body>
 </html>

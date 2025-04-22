@@ -8,7 +8,7 @@ include '../config/db_connect.php'; // Database connection
 
 // Fetch summary statistics
 $total_users = $conn->query("SELECT COUNT(*) FROM users WHERE role='user'")->fetch_row()[0];
-$total_bookings = $conn->query("SELECT COUNT(*) FROM reservations")->fetch_row()[0]; // Corrected table name
+$total_bookings = $conn->query("SELECT COUNT(*) FROM bookings")->fetch_row()[0];
 $total_parking_slots = $conn->query("SELECT COUNT(*) FROM parking_slots")->fetch_row()[0];
 ?>
 <!DOCTYPE html>
