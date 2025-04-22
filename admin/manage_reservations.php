@@ -41,11 +41,13 @@ $result = $conn->query("SELECT b.id, u.name AS user_name, p.name AS parking_name
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Manage Bookings | Advance Parking Finder</title>
     <?php include '../includes/head.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body>
     <?php include '../includes/sidebar.php'; ?>
     <?php include '../includes/topbar.php'; ?>
@@ -102,11 +104,7 @@ $result = $conn->query("SELECT b.id, u.name AS user_name, p.name AS parking_name
                                             <td><?php echo htmlspecialchars($row['parking_name'] ?? 'Unknown Spot'); ?></td>
                                             <td><?php echo htmlspecialchars($row['booking_date']); ?></td>
                                             <td>
-                                                <span class="badge 
-                                                    <?php echo ($row['status'] == 'Confirmed') ? 'bg-success' : 
-                                                               (($row['status'] == 'Reserved') ? 'bg-warning' : 'bg-danger'); ?>">
-                                                    <?php echo htmlspecialchars($row['status']); ?>
-                                                </span>
+                                                <?php echo htmlspecialchars($row['status']); ?>
                                             </td>
                                             <td>
                                                 <form method="POST" style="display: inline;" onsubmit="return confirmDelete()">
@@ -135,9 +133,10 @@ $result = $conn->query("SELECT b.id, u.name AS user_name, p.name AS parking_name
     </div>
     <?php include '../includes/footer.php'; ?>
     <script>
-    function confirmDelete() {
-        return confirm("Are you sure you want to delete this booking? This action cannot be undone.");
-    }
+        function confirmDelete() {
+            return confirm("Are you sure you want to delete this booking? This action cannot be undone.");
+        }
     </script>
 </body>
+
 </html>
