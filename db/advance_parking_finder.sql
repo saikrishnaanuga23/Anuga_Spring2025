@@ -85,12 +85,12 @@ CREATE TABLE `parking_slots` (
 -- Dumping data for table `parking_slots`
 --
 
-INSERT INTO `parking_slots` (`id`, `name`, `location`, `capacity`, `latitude`, `longitude`, `price`, `booked_slots`) VALUES
-(6, 'nexus', 'Gayathri Puram, Mysuru, Karnataka, India', 600, 12.32206410, 76.66800830, 600, 0),
-(7, 'letspro', 'Letspro Academy | Vijayanagar, Mahadeswara Badavane, Vijay Nagar 2nd Stage, Gokulam, Mysuru, Karnataka, India', 90, 12.33788480, 76.62129280, 86, 0),
-(8, 'Sri parking', 'Bangalore, Karnataka, India', 500, 12.97159870, 77.59456270, 600, 0),
-(9, 'parking', 'Chennai, Tamil Nadu, India', 200, 13.08430070, 80.27046220, 300, 1),
-(10, 'acharya', 'ACHARYA INSTITUTE, Bengaluru, Karnataka', 4000, 13.08472460, 77.48310320, 300, 0);
+-- INSERT INTO `parking_slots` (`id`, `name`, `location`, `capacity`, `latitude`, `longitude`, `price`, `booked_slots`) VALUES
+-- (6, 'nexus', 'Gayathri Puram, Mysuru, Karnataka, India', 600, 12.32206410, 76.66800830, 600, 0),
+-- (7, 'letspro', 'Letspro Academy | Vijayanagar, Mahadeswara Badavane, Vijay Nagar 2nd Stage, Gokulam, Mysuru, Karnataka, India', 90, 12.33788480, 76.62129280, 86, 0),
+-- (8, 'Sri parking', 'Bangalore, Karnataka, India', 500, 12.97159870, 77.59456270, 600, 0),
+-- (9, 'parking', 'Chennai, Tamil Nadu, India', 200, 13.08430070, 80.27046220, 300, 1),
+-- (10, 'acharya', 'ACHARYA INSTITUTE, Bengaluru, Karnataka', 4000, 13.08472460, 77.48310320, 300, 0);
 
 -- --------------------------------------------------------
 

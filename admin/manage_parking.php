@@ -38,13 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_parking'])) {
     }
 }
 
-// Fetch parking slots along with available slots calculation
-// $query = "SELECT p.id, p.name, p.location, p.latitude, p.longitude, p.capacity, p.price, 
-//                  (p.capacity - COALESCE((SELECT COUNT(*) FROM reservations r WHERE r.parking_id = p.id AND r.status = 'Confirmed'), 0)) AS available_slots 
-//           FROM parking_slots p 
-//           ORDER BY p.id DESC";
-// $result = $conn->query($query);
-
 $query = "SELECT p.id, p.name, p.location, p.latitude, p.longitude, p.capacity, p.price, 
                  (p.capacity - COALESCE((SELECT COUNT(*) FROM bookings b WHERE b.parking_id = p.id AND b.status IN ('confirmed')), 0)) AS available_slots 
           FROM parking_slots p 
