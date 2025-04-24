@@ -63,7 +63,7 @@ $stmt->close();
                                                 <td>
     <span class="badge 
         <?php 
-            $status = strtolower($booking['status']); // Convert status to lowercase for consistency
+            $status = strtolower($booking['status']); 
             if ($status === 'confirmed') {
                 echo 'bg-success'; // Green for confirmed
             } elseif ($status === 'reserved') {
